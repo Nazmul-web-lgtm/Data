@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ব্যক্তিগত তথ্য ফরম</title>
+
+<style>
+body{font-family:Arial;background:#f0f0f0;margin:0;}
+.container{max-width:1100px;margin:20px auto;background:#fff;padding:30px;border:3px solid #000;}
+.section{margin-top:25px;font-weight:bold;background:#e9e9e9;padding:6px;border:1px solid #000;}
+.form-group{margin:10px 0;}
+input, select, textarea{width:100%;padding:6px;border:1px solid #000;}
+button{margin-top:20px;width:100%;padding:10px;background:#000;color:#fff;border:none;font-size:16px;}
+.hidden{display:none;}
+</style>
+
+<script>
+window.onload=function(){
+  const today=new Date();
+  document.getElementById("formDate").value=today.toISOString().split('T')[0];
+  document.getElementById("formNo").value="FORM-"+Date.now();
+}
+
+function toggleMarriage(){
+  const yes=document.getElementById("married_yes").checked;
+  document.getElementById("spouseSection").style.display=yes?"block":"none";
+  document.getElementById("childSection").style.display=yes?"block":"none";
+  document.getElementById("inlawSection").style.display=yes?"block":"none";
+}
+
+function submitForm(e){
+  e.preventDefault();
+  const formData=new FormData(document.getElementById("dataForm"));
+  const data=Object.fromEntries(formData.entries());
+
+  fetch("https://script.google.com/macros/s/AKfycbxXhnuSWkQ06N1kdbbIPqXIMI1M1YRqAXivHJ5quMylnUh-fO2-SlY4jJeVxRH6aR5c/exec",{
+    method:"POST",
+    body:JSON.stringify(data)
+  })
+  .then(res=>res.json())
+  .then(()=>{
+    alert("ডাটা সফলভাবে Google Sheet এ সংরক্ষিত হয়েছে");
+    document.getElementById("dataForm").reset();
+  })
+  .catch(()=>alert("সমস্যা হয়েছে"));
+}
+</script>
+</head>
+
+<body>
+<div class="container">
+
+<form id="dataForm" onsubmit="submitForm(event)">
+
+ফর্ম নং: <input type="text" id="formNo" name="formNo" readonly>
+তারিখ: <input type="date" id="formDate" name="date" readonly>
+
+<div class="section">প্রাথমিক তথ্য</div>
+
+<input name="serial" placeholder="সঃসংখ্যা">
+<input name="name" placeholder="নাম" required>
+<input name="designation" placeholder="পদবী">
+<input name="mobile" placeholder="মোবাইল">
+<input name="navyCard" placeholder="নৌ বাহিনী কার্ড নং">
+<input name="cgCard" placeholder="কোস্ট গার্ড কার্ড নং">
+<input type="date" name="joinDate">
+<input name="joinPlace" placeholder="যোগদানের স্থান">
+<input name="gcb" placeholder="জিসিবি">
+<input type="date" name="dob">
+<input name="nid" placeholder="NID">
+
+<select name="blood">
+<option>A+</option><option>A-</option>
+<option>B+</option><option>B-</option>
+<option>O+</option><option>O-</option>
+<option>AB+</option><option>AB-</option>
+</select>
+
+<input name="height" placeholder="উচ্চতা">
+<textarea name="presentAddress" placeholder="বর্তমান ঠিকানা"></textarea>
+<textarea name="permanentAddress" placeholder="স্থায়ী ঠিকানা"></textarea>
+
+<div class="section">উত্তরাধিকার</div>
+<input name="nomineeName" placeholder="উত্তরাধিকারের নাম">
+<input name="nomineeRelation" placeholder="উত্তরাধিকারের সাথে সম্পর্ক">
+<input name="nomineeMobile" placeholder="উত্তরাধিকারের মোবাইল">
+<textarea name="nomineeAddress" placeholder="উত্তরাধিকারের ঠিকানা"></textarea>
+
+<div class="section">পিতা-মাতা</div>
+<input name="fatherName" placeholder="পিতার নাম">
+<input name="fatherMobile" placeholder="পিতার মোবাইল নং">
+<input name="fatherNid" placeholder="পিতার NID নং">
+<input name="motherName" placeholder="মাতার নাম">
+<input name="motherMobile" placeholder="মাতার মোবাইল নং">
+<input name="motherNid" placeholder="মাতার NID নং">
+
+<div class="section">বৈবাহিক</div>
+<label><input type="radio" name="married" value="Yes" id="married_yes" onclick="toggleMarriage()"> হ্যাঁ</label>
+<label><input type="radio" name="married" value="No" onclick="toggleMarriage()"> না</label>
+
+<label><input type="radio" name="mlr" value="Yes"> MLR হ্যাঁ</label>
+<label><input type="radio" name="mlr" value="No"> MLR না</label>
+
+<div id="spouseSection" class="hidden">
+<input name="wifeName" placeholder="স্ত্রীর নাম">
+<input type="date" name="wifeDob">
+<input name="wifeMobile" placeholder="স্ত্রীর মোবাইল নং">
+<input name="wifeNid" placeholder="স্ত্রীর NID নং">
+</div>
+
+<div id="childSection" class="hidden">
+<input name="child1" placeholder="১ম সন্তানের নাম">
+<input type="date" name="১ম সন্তানের জন্ম তারিখ">
+<input name="child2" placeholder="২য় সন্তানের নাম">
+<input type="date" name="২য় সন্তানের জন্ম তারিখ">
+<input name="child3" placeholder="৩য় সন্তানের নাম">
+<input type="date" name="৩য় সন্তানের জন্ম তারিখ">
+</div>
+
+<div id="inlawSection" class="hidden">
+<input name="filName" placeholder="শ্বশুরের নাম">
+<input name="filMobile" placeholder="শ্বশুরের মোবাইল নং">
+<input name="filNid" placeholder="শ্বশুরের NID নং">
+<input name="milName" placeholder="শাশুড়ীর নাম">
+<input name="milMobile" placeholder="শাশুড়ীর মোবাইল নং">
+<input name="milNid" placeholder="শাশুড়ীর NID নং">
+</div>
+
+<textarea name="comment" placeholder="মন্তব্য"></textarea>
+
+<button type="submit">সাবমিট</button>
+
+</form>
+</div>
+</body>
+</html>
